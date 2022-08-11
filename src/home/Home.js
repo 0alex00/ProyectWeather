@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Text, 
     View, 
@@ -21,12 +21,10 @@ var mainIcon = "01d"
 
 const Home = () => {
     
+    const [data, setData] = useState([]);
     return (
         <View style = {styles.container}>
-            <View>
-                {/*TODO: Nombre de la cuidad*/}
-                <Text>hola que hace</Text>
-            </View>
+           
             <View>
                 {/*TODO: Imagen*/}
             </View>
@@ -41,12 +39,16 @@ const Home = () => {
                     requestWeatherData(event.nativeEvent.text);
                 }} />
             </View>
-            <Image
-                style={styles.mainImageStyle}
-                source={{
-                    uri: `${BASE_URL}/img/w/${mainIcon}.png`,
-                }}
-            />
+            <View>
+                {data && (
+                    <Text>{`${data.name}`}</Text>
+                )}
+           </View>
+           
+            <Image 
+            style={styles.mainImageStyle}
+            source={require("../assets/images/despejado_dia.png")}/>
+            
         </View>
     );
 
@@ -86,9 +88,8 @@ const styles = StyleSheet.create({
     },
 
     mainImageStyle: {
-        width: 100,
-        height: 100,
-        resizeMode: 'stretch',
-      },
+        width: 200,
+        height: 200,
+        alignSelf: 'center'      },
 });
 export default Home; 
