@@ -3,11 +3,9 @@ import {
     Text, 
     View, 
     StyleSheet, 
-    TextInput, 
-    ToastAndroid,
-    Platform,
-    AlertIOS,
-    Image
+    TextInput,
+    Image,
+    SafeAreaView
 } from 'react-native';
 
 const API_KEY = {
@@ -20,44 +18,46 @@ const units = "metric" // metric for Celcius, imperial for Fahrenheit and empty 
 
 const Home = () => {
 
-    const [nameCity, setNameCity] = useState([]);
-    const [countryCity, setCountryCity] = useState([]);
+    const [nameCity, setNameCity] = useState(['-']);
+    const [countryCity, setCountryCity] = useState(['-']);
     const [tempText, setTempText] = useState([]);
-    const [descText, setDescText] = useState([]);
+    const [descText, setDescText] = useState(['-']);
     const [minTempText, setMinTempText] = useState([]);
     const [maxTempText, setMaxTempText] = useState([]);
 
     return ( 
-        <View style = {styles.container}>
+        <SafeAreaView style={styles.container}>
+            <View style = {styles.container}>
            
-            <View>
-                <TextInput
-                placeholder = "Ingresa el nombre de la cuidad"
-                style = {styles.textInput}
-                onSubmitEditing = {(event) => {
-                    requestWeatherData(event.nativeEvent.text);
-                }} />
-            </View>
-            <View>
-             <Text style={styles.cityCountyStyle}>{nameCity}, {countryCity}</Text>
+           <View>
+               <TextInput
+               placeholder = "Ingresa el nombre de la cuidad"
+               style = {styles.textInput}
+               onSubmitEditing = {(event) => {
+                   requestWeatherData(event.nativeEvent.text);
+               }} />
            </View>
-           <Image 
-            style={styles.mainImageStyle}
-            source={require("../assets/images/despejado_dia.png")}/>
+           <View>
+            <Text style={styles.cityCountyStyle}>{nameCity}, {countryCity}</Text>
+          </View>
+          <Image 
+           style={styles.mainImageStyle}
+           source={require("../assets/images/despejado_dia.png")}/>
 
-            <View>
-                <Text style={styles.tempStyle}>{`${Math.round(tempText)} °C`}</Text>
-                <Text style={styles.descStyle}>{descText}No sale descripcion</Text>{/*AQUI DEBERIA MOSTRAR LA DESCRIPCION OBTENIDA DEL DATA */}
-                <Text style={styles.dateStyle}>{new Date().toLocaleString()}</Text>
-                <View style = {styles.lineStyle}/>
-            </View>
-            
-            <View style = {{flexDirection: 'row', justifyContent:'space-around'}}>
-            <Text style={styles.minMaxStyle}>{`Min: ${Math.round(minTempText)} °C`}</Text>
-            <Text style={styles.minMaxStyle}>{`Max: ${Math.round(maxTempText)} °C`}</Text>
-            </View>
-            
-        </View>
+           <View>
+               <Text style={styles.tempStyle}>{`${Math.round(tempText)} °C`}</Text>
+               <Text style={styles.descStyle}>{descText}</Text>
+               <Text style={styles.dateStyle}>{new Date().toLocaleString()}</Text>
+               <View style = {styles.lineStyle}/>
+           </View>
+           
+           <View style = {{flexDirection: 'row', justifyContent:'space-around'}}>
+           <Text style={styles.minMaxStyle}>{`Min: ${Math.round(minTempText)} °C`}</Text>
+           <Text style={styles.minMaxStyle}>{`Max: ${Math.round(maxTempText)} °C`}</Text>
+           </View>
+           
+       </View>
+        </SafeAreaView>
     );
 
     async function requestWeatherData(city){
@@ -70,7 +70,7 @@ const Home = () => {
             setNameCity(data['name']);
             setCountryCity(data['sys']['country']);
             setTempText(data['main'] ['temp']);
-            setDescText(data['weather']['icon']);//AQUI ME SALE ERROR DICE "undefined"
+            setDescText(data['weather'][0]['description']);
             setMinTempText(data['main']['temp_min']);
             setMaxTempText(data['main']['temp_max']);
         //data debuger
