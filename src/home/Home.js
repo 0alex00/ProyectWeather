@@ -5,7 +5,10 @@ import {
     StyleSheet, 
     TextInput,
     Image,
-    SafeAreaView
+    SafeAreaView,
+    ToastAndroid,
+    Platform,
+    AlertIOS
 } from 'react-native';
 
 const API_KEY = {
@@ -24,6 +27,8 @@ const Home = () => {
     const [descText, setDescText] = useState(['-']);
     const [minTempText, setMinTempText] = useState([]);
     const [maxTempText, setMaxTempText] = useState([]);
+
+    const [mainImage, setMainImage] = useState(['./assets/despejado_dia.png']);
 
     return ( 
         <SafeAreaView style={styles.container}>
@@ -63,24 +68,50 @@ const Home = () => {
     async function requestWeatherData(city){
         const data = await fetch(`${BASE_URL}/data/2.5/weather?q=${city}&lang=${lang}&units=${units}&appid=${API_KEY.key}`)
         .then(res => res.json()).catch(function(error) {
-            console.log('There has been a problem with your fetch operation: ' + error.message);
-             // ADD THIS THROW error
+            showToastMessage("No ha sido posible conectarse, intente más tarde.");
               throw error;
             });
-            setNameCity(data['name']);
-            setCountryCity(data['sys']['country']);
-            setTempText(data['main'] ['temp']);
-            setDescText(data['weather'][0]['description']);
-            setMinTempText(data['main']['temp_min']);
-            setMaxTempText(data['main']['temp_max']);
-        //data debuger
-        console.log(data);
-        console.log("API KEY: "+API_KEY.key);
-        console.log(descText);
-        console.log(minTempText);
-        console.log(maxTempText);    
+        if(data['cod']!=404){
+          setNameCity(data['name']);
+          setCountryCity(data['sys']['country']);
+          setTempText(data['main'] ['temp']);
+          setDescText(data['weather'][0]['description']);
+          setMinTempText(data['main']['temp_min']);
+          setMaxTempText(data['main']['temp_max']);
+
+          updateMainImage(data['weather'][0]['icon']);
+        
+          //data debuger
+          console.log(data);
+          console.log("API KEY: "+API_KEY.key);
+          console.log(descText);
+          console.log(minTempText);
+          console.log(maxTempText);
+        }else{
+          showToastMessage("Lo sentimos, la ciudad introducida no existe.");
+        }
     }
 
+    function showToastMessage(message){
+      if (Platform.OS === 'android') {
+          ToastAndroid.show(message, ToastAndroid.SHORT)
+      } else {
+          AlertIOS.alert(message);
+      }
+    }
+
+    function updateMainImage(icon){
+      var imageTmp = ""
+      switch (icon){
+        case '01d': // Is day
+          imageTmp = "despejado_dia"
+          break;
+        case '01n': // Is night
+          imageTmp = "despejado_noche"
+          break;
+      }
+      setMainImage("./assets/"+imageTmp+".png")
+    }
 };
 
 
