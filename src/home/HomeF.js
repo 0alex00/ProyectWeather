@@ -4,7 +4,6 @@ import {
     View, 
     StyleSheet, 
     TextInput,
-    Image,
     SafeAreaView,
     ToastAndroid,
     Platform,
@@ -27,9 +26,8 @@ const Home = () => {
     const [descText, setDescText] = useState('');
     const [minTempText, setMinTempText] = useState('');
     const [maxTempText, setMaxTempText] = useState('');
-
-    const [mainImage, setMainImage] = useState(['./assets/despejado_dia.png']);
-
+    const [windText, setWindText] = useState('');
+    const [humdText, setHumdText] = useState('');
     return ( 
         <SafeAreaView style={styles.container}>
             <View style = {styles.container}>
@@ -45,20 +43,20 @@ const Home = () => {
            <View>
             <Text style={styles.cityCountyStyle}>{nameCity}, {countryCity}</Text>
           </View>
-          <Image 
-           style={styles.mainImageStyle}
-           source={require("../assets/images/despejado_dia.png")}/>
-
            <View>
-               <Text style={styles.tempStyle}>{`${Math.round(tempText)} °C`}</Text>
+               <Text style={styles.tempStyle}>{`${Math.round(tempText)}°`}</Text>
                <Text style={styles.descStyle}>{descText}</Text>
-               <Text style={styles.dateStyle}>{new Date().toLocaleString()}</Text>
+               <Text style={styles.dateStyle}>{new Date().toLocaleString('es')}</Text>
                <View style = {styles.lineStyle}/>
            </View>
            
            <View style = {{flexDirection: 'row', justifyContent:'space-around'}}>
            <Text style={styles.minMaxStyle}>{`Min: ${Math.round(minTempText)} °C`}</Text>
            <Text style={styles.minMaxStyle}>{`Max: ${Math.round(maxTempText)} °C`}</Text>
+           </View>
+           <View style = {{flexDirection: 'row', justifyContent:'space-around'}}>
+           <Text style={styles.minMaxStyle}>{`Viento: ${windText} km/h`}</Text>
+           <Text style={styles.minMaxStyle}>{`Humedad: ${humdText} %`}</Text>
            </View>
            
        </View>
@@ -78,8 +76,8 @@ const Home = () => {
           setDescText(data['weather'][0]['description']);
           setMinTempText(data['main']['temp_min']);
           setMaxTempText(data['main']['temp_max']);
-
-          updateMainImage(data['weather'][0]['icon']);
+          setWindText(data['wind']['speed']);
+          setHumdText(data['main']['humidity']);
         
           //data debuger
           console.log(data);
@@ -98,25 +96,6 @@ const Home = () => {
       } else {
           AlertIOS.alert(message);
       }
-    }
-
-    function updateMainImage(icon){
-      var imageTmp = ""
-      switch (icon){
-        case '01d': // Is day
-          imageTmp = "despejado_dia"
-          break;
-        case '01n': // Is night
-          imageTmp = "despejado_noche"
-          break;
-        case '02d': //nublado dia
-          imageTmp = "nublado_dia"
-          break;
-        case '02n' : //nublado noche
-          imageTmp = "nublado_noche"
-          break;
-      }
-      setMainImage("../assets/"+imageTmp+".png")
     }
 };
 
@@ -154,9 +133,9 @@ const styles = StyleSheet.create({
     },
     tempStyle: {
         color: '#FFFFFF',
-        fontSize: 100,
+        fontSize: 200,
         alignSelf: 'center',
-        fontWeight: 'bold',
+        fontWeight: '400',
 
     },
     descStyle: {
@@ -178,7 +157,7 @@ const styles = StyleSheet.create({
     },
     minMaxStyle:{
         color: '#FFF',
-        fontSize: 25,
+        fontSize: 20,
         margin: 20,
     },
 });
