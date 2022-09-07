@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 const API_KEY = {
-    key: '85ffa1c9e99c109d3209610d83799428' //open weather key
+    key: 'd3a90a80843a6dd8d6355e9ce4e52619' //open weather key de Calef
 }
 const BASE_URL= "https://api.openweathermap.org"
 const lang = "es"
